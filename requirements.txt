@@ -1,0 +1,25 @@
+--extra-index-url https://download.pytorch.org/whl/cpu
+
+# ── Web framework ──────────────────────────────────────────────────────────────
+fastapi>=0.100.0
+uvicorn[standard]>=0.23.0
+python-multipart>=0.0.6
+aiofiles>=23.0.0
+
+# ── ML core ────────────────────────────────────────────────────────────────────
+xgboost>=2.0.0
+shap>=0.43.0
+scikit-learn>=1.3.0
+torch>=2.0.0+cpu           # CPU-only wheel — keeps build RAM under 512 MB
+
+# ── Data / utils ───────────────────────────────────────────────────────────────
+numpy>=1.24.0
+pandas>=2.0.0
+tqdm>=4.66.0
+
+# ── Web scraping (content analysis) ───────────────────────────────────────────
+beautifulsoup4>=4.12.0
+requests>=2.31.0
+
+# ── Config ─────────────────────────────────────────────────────────────────────
+python-dotenv>=1.0.0

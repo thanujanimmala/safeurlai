@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SafeURL AI — Advanced Phishing Detection</title>
+  <meta name="description"
+    content="AI-powered phishing URL detection with Explainable AI, Char-CNN typo-squatting detection, and real-time webpage content analysis." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+
+<body>
+
+  <!-- ── Animated Background ───────────────────────────────────────────────── -->
+  <div class="bg-grid"></div>
+  <div class="bg-glow glow-1"></div>
+  <div class="bg-glow glow-2"></div>
+  <div class="bg-glow glow-3"></div>
+
+  <!-- ── Navigation ────────────────────────────────────────────────────────── -->
+  <nav class="navbar">
+    <div class="nav-inner">
+      <div class="nav-brand">
+        <div class="brand-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2L3 7V12C3 16.55 7.08 20.74 12 22C16.92 20.74 21 16.55 21 12V7L12 2Z"
+              fill="url(#shield-grad)" />
+            <path d="M9 12L11 14L15 10" stroke="white" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" />
+            <defs>
+              <linearGradient id="shield-grad" x1="3" y1="2" x2="21" y2="22">
+                <stop offset="0%" stop-color="#6366f1" />
+                <stop offset="100%" stop-color="#8b5cf6" />
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <span class="brand-name">SafeURL <span class="brand-pro">AI</span></span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── Hero Section ───────────────────────────────────────────────────────── -->
+  <main class="main-container">
+    <section class="hero">
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        Dual-Layer AI Detection · Explainable · Self-Learning
+      </div>
+      <h1 class="hero-title">
+        Is This URL<br />
+        <span class="gradient-text">Safe or Phishing?</span>
+      </h1>
+      <p class="hero-subtitle">
+        Analyzing URL structure + Webpage content + Deep-CNN brand detection — powered by XGBoost + SHAP Explainable AI
+      </p>
+
+      <!-- ── URL Input ──────────────────────────────────────────────────────── -->
+      <div class="search-container">
+        <div class="search-box" id="search-box">
+          <div class="search-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M10 2C5.58 2 2 5.58 2 10C2 14.42 5.58 18 10 18C11.85 18 13.55 17.37 14.9 16.31L20.29 21.71L21.71 20.29L16.31 14.9C17.37 13.55 18 11.85 18 10C18 5.58 14.42 2 10 2ZM10 4C13.31 4 16 6.69 16 10C16 13.31 13.31 16 10 16C6.69 16 4 13.31 4 10C4 6.69 6.69 4 10 4Z"
+                fill="currentColor" />
+            </svg>
+          </div>
+          <input type="url" id="url-input" class="url-input"
+            placeholder="Paste any URL to analyze — e.g. https://paypa1.tk/login" autocomplete="off"
+            spellcheck="false" />
+          <input type="checkbox" id="fetch-content" checked style="display: none;" />
+          <button class="analyze-btn" id="analyze-btn" onclick="analyzeURL()">
+            <span id="btn-text">Analyze</span>
+            <div class="btn-spinner hidden" id="btn-spinner"></div>
+          </button>
+        </div>
+        <div class="example-urls">
+          <span class="example-label">Try:</span>
+          <button class="example-chip" onclick="setExample('https://www.google.com')">google.com</button>
+          <button class="example-chip danger"
+            onclick="setExample('http://paypa1.tk/login/verify.php')">paypa1.tk</button>
+          <button class="example-chip danger"
+            onclick="setExample('http://192.168.1.1/secure/banking/verify?user=victim')">IP address URL</button>
+          <button class="example-chip warning" onclick="setExample('http://secure-amazon-verify.cf/account')">fake
+            Amazon</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Results Section ───────────────────────────────────────────────────── -->
+    <section class="results-section hidden" id="results-section">
+
+      <!-- ── Risk Gauge ─────────────────────────────────────────────────────── -->
+      <div class="result-header">
+        <div class="risk-gauge-container">
+          <div class="risk-gauge" id="risk-gauge">
+            <svg class="gauge-svg" viewBox="0 0 200 120">
+              <!-- Background arc -->
+              <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#1e293b" stroke-width="16"
+                stroke-linecap="round" />
+              <!-- Colored arc -->
+              <path id="gauge-arc" d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#6366f1" stroke-width="16"
+                stroke-linecap="round" stroke-dasharray="251.2" stroke-dashoffset="251.2" />
+              <!-- Needle -->
+              <line id="gauge-needle" x1="100" y1="100" x2="100" y2="30" stroke="#e2e8f0" stroke-width="3"
+                stroke-linecap="round" />
+              <circle cx="100" cy="100" r="6" fill="#e2e8f0" />
+            </svg>
+            <div class="gauge-center">
+              <div class="risk-percent" id="risk-percent">0%</div>
+              <div class="risk-label" id="risk-label">Analyzing…</div>
+            </div>
+          </div>
+
+          <div class="risk-badges">
+            <div class="risk-badge" id="badge-safe">
+              <div class="badge-icon">🟢</div>
+              <div>Safe</div>
+            </div>
+            <div class="risk-badge" id="badge-suspicious">
+              <div class="badge-icon">🟡</div>
+              <div>Suspicious</div>
+            </div>
+            <div class="risk-badge" id="badge-phishing">
+              <div class="badge-icon">🔴</div>
+              <div>Phishing</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="result-meta">
+          <div class="analyzed-url" id="analyzed-url-display"></div>
+          <div class="score-pills">
+            <div class="score-pill">
+              <span class="pill-label">Phishing Probability</span>
+              <span class="pill-value" id="phishing-prob-display">–</span>
+            </div>
+            <div class="score-pill" id="protocol-status-pill">
+              <span class="pill-label">Protocol Status</span>
+              <span class="pill-value" id="protocol-status-display">–</span>
+            </div>
+            <div class="score-pill info">
+              <span class="pill-label">Model</span>
+              <span class="pill-value" id="model-type-display">XGBoost + SHAP</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Unified Security Diagnosis Card ─────────────────────────────────── -->
+      <div class="card diagnosis-card" id="diagnosis-card">
+        <div class="card-header">
+          <div class="card-icon purple">🛡️</div>
+          <h2 class="card-title">Security Diagnosis</h2>
+        </div>
+        <div class="diagnosis-body">
+          <p class="diagnosis-explanation" id="diagnosis-explanation">
+            <!-- Populated by JS -->
+          </p>
+          <div class="diagnosis-factors-heading">Observed Security &amp; Structural Factors:</div>
+          <div class="diagnosis-factors" id="diagnosis-factors">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- ── User Report ────────────────────────────────────────────────────── -->
+      <div class="card report-card" id="report-card">
+        <div class="card-header">
+          <div class="card-icon orange">🚨</div>
+          <h2 class="card-title">Report This URL</h2>
+        </div>
+        <p class="report-subtitle">
+          Model says <strong id="model-says-text">–</strong> but you think it's wrong?
+          Your report helps retrain the AI active learning pipeline.
+        </p>
+        <div class="report-actions">
+          <button class="report-btn phishing-btn" onclick="submitReport('PHISHING')" id="report-phishing-btn">
+            🔴 Report as Phishing
+          </button>
+          <button class="report-btn safe-btn" onclick="submitReport('SAFE')" id="report-safe-btn">
+            🟢 Mark as Safe
+          </button>
+        </div>
+        <div class="report-status hidden" id="report-status"></div>
+      </div>
+
+    </section>
+
+    <!-- ── How It Works Section ──────────────────────────────────────────────── -->
+    <section class="how-it-works">
+      <h2 class="section-title">How SafeURL AI Works</h2>
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-num">01</div>
+          <div class="step-icon">🔗</div>
+          <h3>URL Feature Extraction</h3>
+          <p>30 lexical features extracted from the URL: entropy, token analysis, IP detection, suspicious TLDs, and
+            more.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-num">02</div>
+          <div class="step-icon">🌐</div>
+          <h3>Webpage Content Analysis</h3>
+          <p>Live HTML scraping detects login forms, iframes, favicon mismatches, and suspicious redirect scripts.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-num">03</div>
+          <div class="step-icon">🔡</div>
+          <h3>Char-CNN Typo Detection</h3>
+          <p>Character-level neural network catches brand spoofing (paypa1.com, g00gle.com) without keyword lists.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-num">04</div>
+          <div class="step-icon">🧠</div>
+          <h3>XGBoost + SHAP XAI</h3>
+          <p>Hybrid model with 3-tier risk classification explains every decision in plain English.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-num">05</div>
+          <div class="step-icon">🔄</div>
+          <h3>Active Learning Loop</h3>
+          <p>User reports feed back into the model — it continuously learns from real-world feedback.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ── Footer ─────────────────────────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div>
+        © SafeURL AI — AI-Powered Web Security
+      </div>
+    </div>
+  </footer>
+
+  <!-- ── Toast Notification Container ──────────────────────────────────────── -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <script src="/static/app.js?v=5"></script>
+</body>
+
+</html>

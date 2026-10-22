@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# Environment & secrets
+.env
+.env.*
+!.env.example
+
+# IDE
+.vscode/
+.idea/
+*.suo
+*.user
+
+# OS
+.DS_Store
+Thumbs.db
+
+# SQLite DB (do NOT commit — Render's disk is ephemeral; use a hosted DB in prod)
+backend/phishguard.db
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Large generated files / build artefacts
+*.pdf

@@ -1,0 +1,30 @@
+# render.yaml — SafeURL AI (PhishGuard Pro)
+# Single-origin web service: FastAPI backend + static frontend served together.
+# Render docs: https://render.com/docs/blueprint-spec
+
+services:
+  - type: web
+    name: safeurlai
+    runtime: python
+    region: oregon          # Change to "frankfurt" or "singapore" if closer to users
+    plan: free              # Upgrade to "starter" for always-on + more RAM
+
+    # ── Build ─────────────────────────────────────────────────────────────────
+    buildCommand: pip install -r requirements.txt
+
+    # ── Start ─────────────────────────────────────────────────────────────────
+    # Render injects $PORT; uvicorn reads it from the environment.
+    startCommand: uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT
+
+    # ── Health check ──────────────────────────────────────────────────────────
+    healthCheckPath: /health
+
+    # ── Environment variables ─────────────────────────────────────────────────
+    envVars:
+      - key: PYTHONUNBUFFERED
+        value: "1"
+      - key: PYTHONDONTWRITEBYTECODE
+        value: "1"
+      # Add any secret keys here (or set them in the Render dashboard):
+      # - key: SECRET_KEY
+      #   generateValue: true
